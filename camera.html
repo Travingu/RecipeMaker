@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera - Black & Blue Theme</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="camera.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">ThemeSite</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="camera.html">Camera</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Take a <span>photo</span> of the ingredients.</h1>
+        </section>
+        
+        <div class="camera-container">
+            <div class="camera-viewport">
+                <video id="camera-feed" autoplay playsinline></video>
+                <div class="camera-placeholder" id="placeholder">
+                    Camera feed will appear here
+                </div>
+            </div>
+            <div class="camera-controls">
+                <button class="camera-btn" id="start-btn">Start Camera</button>
+                <button class="camera-btn" id="stop-btn" style="display: none;">Stop Camera</button>
+                <button class="camera-btn secondary" id="capture-btn">Capture</button>
+            </div>
+            <div id="captured-images"></div>
+        </div>
+
+        <div class="recipe-panel" id="recipe-panel">
+            <div class="recipe-header">
+                <h1>Generated Recipes</h1>
+                <button class="close-panel-btn" id="close-panel-btn">×</button>
+            </div>
+            <div class="recipe-content">
+                <ul class="recipe-list">
+                    <li class="recipe-item">
+                        <div class="recipe-title">
+                            <span><strong>Recipe 1:</strong> Sample dish with ingredients</span>
+                            <small>Serves 4 | Prep: 15 min | Cook: 30 min</small>
+                        </div>
+                        <div class="recipe-details">
+                            <h3>Ingredients</h3>
+                            <ul>
+                                <li>2 cups all-purpose flour</li>
+                                <li>1 cup sugar</li>
+                                <li>1/2 cup butter, softened</li>
+                                <li>2 eggs</li>
+                                <li>1 tsp vanilla extract</li>
+                            </ul>
+                            <h3>Instructions</h3>
+                            <ol>
+                                <li>Preheat oven to 350°F (175°C).</li>
+                                <li>Mix flour and sugar in a large bowl.</li>
+                                <li>Add butter, eggs, and vanilla. Mix until smooth.</li>
+                                <li>Pour into a greased baking pan.</li>
+                                <li>Bake for 25-30 minutes until golden brown.</li>
+                            </ol>
+                        </div>
+                    </li>
+                    <li class="recipe-item">
+                        <div class="recipe-title">
+                            <span><strong>Recipe 2:</strong> Another delicious option</span>
+                            <small>Serves 2 | Prep: 10 min | Cook: 20 min</small>
+                        </div>
+                        <div class="recipe-details">
+                            <h3>Ingredients</h3>
+                            <ul>
+                                <li>1 lb chicken breast</li>
+                                <li>1 cup vegetables</li>
+                                <li>2 tbsp olive oil</li>
+                                <li>1 tsp garlic powder</li>
+                                <li>Salt and pepper to taste</li>
+                            </ul>
+                            <h3>Instructions</h3>
+                            <ol>
+                                <li>Season chicken with garlic powder, salt, and pepper.</li>
+                                <li>Heat olive oil in a pan over medium-high heat.</li>
+                                <li>Cook chicken for 6-7 minutes per side.</li>
+                                <li>Add vegetables and cook for 5 minutes.</li>
+                                <li>Serve hot and enjoy!</li>
+                            </ol>
+                        </div>
+                    </li>
+                    <li class="recipe-item">
+                        <div class="recipe-title">
+                            <span><strong>Recipe 3:</strong> Quick and easy meal</span>
+                            <small>Serves 6 | Prep: 5 min | Cook: 25 min</small>
+                        </div>
+                        <div class="recipe-details">
+                            <h3>Ingredients</h3>
+                            <ul>
+                                <li>3 cups rice</li>
+                                <li>6 cups water</li>
+                                <li>1 can diced tomatoes</li>
+                                <li>1 onion, diced</li>
+                                <li>1 tsp salt</li>
+                            </ul>
+                            <h3>Instructions</h3>
+                            <ol>
+                                <li>Rinse rice thoroughly.</li>
+                                <li>Combine rice, water, and salt in a pot.</li>
+                                <li>Bring to a boil, then reduce heat to low.</li>
+                                <li>Simmer for 20 minutes until water is absorbed.</li>
+                                <li>Fluff with a fork and serve.</li>
+                            </ol>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Black & Blue Theme. All rights reserved.</p>
+    </footer>
+    <script>
+        const video = document.getElementById('camera-feed');
+        const placeholder = document.getElementById('placeholder');
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const captureBtn = document.getElementById('capture-btn');
+        const capturedImages = document.getElementById('captured-images');
+        let stream = null;
+
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'user',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                });
+                video.srcObject = stream;
+                video.style.display = 'block';
+                placeholder.style.display = 'none';
+                startBtn.style.display = 'none';
+                stopBtn.style.display = 'inline-block';
+                captureBtn.style.display = 'inline-block';
+            } catch (err) {
+                console.error('Error accessing camera:', err);
+                placeholder.textContent = 'Error: Could not access camera';
+            }
+        }
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            video.srcObject = null;
+            video.style.display = 'none';
+            placeholder.style.display = 'flex';
+            placeholder.textContent = 'Camera feed will appear here';
+            startBtn.style.display = 'inline-block';
+            stopBtn.style.display = 'none';
+            captureBtn.style.display = 'none';
+        }
+
+        function captureImage() {
+            if (!stream) {
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            const scaleFactor = 0.5;
+            canvas.width = video.videoWidth * scaleFactor;
+            canvas.height = video.videoHeight * scaleFactor;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'captured-image-container';
+
+            const img = document.createElement('img');
+            img.src = canvas.toDataURL('image/png');
+            img.className = 'captured-image';
+            img.alt = 'Captured image';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-image-btn';
+            removeBtn.textContent = '×';
+            removeBtn.addEventListener('click', function() {
+                capturedImages.removeChild(imgContainer);
+                updateGenerateButton();
+            });
+
+            imgContainer.appendChild(img);
+            imgContainer.appendChild(removeBtn);
+            capturedImages.appendChild(imgContainer);
+            updateGenerateButton();
+        }
+
+        function updateGenerateButton() {
+            const images = capturedImages.querySelectorAll('.captured-image-container');
+            let generateBtn = document.getElementById('generate-btn');
+            
+            if (images.length > 0) {
+                if (!generateBtn) {
+                    generateBtn = document.createElement('button');
+                    generateBtn.id = 'generate-btn';
+                    generateBtn.className = 'camera-btn generate-recipes-btn';
+                    generateBtn.textContent = 'Generate Recipes';
+                    captureBtn.parentNode.insertBefore(generateBtn, captureBtn.nextSibling);
+                }
+            } else {
+                if (generateBtn) {
+                    generateBtn.remove();
+                }
+            }
+        }
+
+        startBtn.addEventListener('click', startCamera);
+        stopBtn.addEventListener('click', stopCamera);
+        captureBtn.addEventListener('click', captureImage);
+
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'generate-btn') {
+                document.getElementById('recipe-panel').classList.add('open');
+            }
+            if (e.target && e.target.id === 'close-panel-btn') {
+                document.getElementById('recipe-panel').classList.remove('open');
+            }
+            
+            // Toggle recipe dropdowns
+            const recipeTitle = e.target.closest('.recipe-title');
+            if (recipeTitle) {
+                const recipeItem = recipeTitle.parentElement;
+                recipeItem.classList.toggle('active');
+            }
+        });
+    </script>
+</body>
+</html>
