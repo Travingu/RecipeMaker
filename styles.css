@@ -172,16 +172,58 @@ footer p {
     align-self: flex-start;
     margin-top: 1rem;
 }
-
+/* Recipe Panel Styles */
 .recipe-panel {
+    display: block;
     margin-top: 2rem;
     background-color: #FAF8F6;
     border: 2px solid #C89D7C;
     border-radius: 8px;
     overflow: hidden;
-    display: none;
 }
 
-.recipe-panel.visible {
-    display: block;
+.recipe-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #C89D7C;
+    color: #ffffff;
+}
+
+.recipe-header h1 {
+    font-size: 1.5rem;
+    color: #ffffff;
+}
+
+.close-panel-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.recipe-content {
+    padding: 1.5rem;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: #666666;
+}
+
+.error {
+    text-align: center;
+    padding: 2rem;
+    color: #e74c3c;
+}
+
+.recipe-result {
+    white-space: pre-wrap;
+    line-height: 1.8;
 }
