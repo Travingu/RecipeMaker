@@ -52,70 +52,7 @@
         </div>
     </main>
 
-    <script>
-        // Function to display the Ollama response on the webpage
-        function displayRecipeResponse(responseText) {
-            const recipeContent = document.getElementById('recipe-content');
-            
-            // Format the response with line breaks for better readability
-            const formattedText = responseText
-                .replace(/\n\n/g, '</p><p>')
-                .replace(/\n/g, '<br>');
-            
-            recipeContent.innerHTML = `<div class="recipe-result">${formattedText}</div>`;
-        }
+    <script src="script.js"></script>
 
-        // Handle ingredients form submission
-        document.getElementById('ingredients-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const ingredients = document.getElementById('ingredients-input').value.trim();
-            if (!ingredients) {
-                alert('Please enter some ingredients');
-                return;
-            }
-
-            const recipeContent = document.getElementById('recipe-content');
-            const recipePanel = document.getElementById('recipe-panel');
-            
-            // Show loading state
-            recipePanel.classList.add('open');
-            recipeContent.innerHTML = '<div class="loading">Analyzing your ingredients and generating recipes...</div>';
-
-            console.log('Generating response');
-
-            try {
-                const response = await fetch('http://localhost:11434/api/generate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        model: 'codellama',
-                        prompt: `I have the following ingredients: ${ingredients}. What recipes can I make with these? Please provide the full recipe including ingredients list, cooking time, serving size, and step-by-step instructions.`,
-                        stream: false
-                    })
-                });
-                
-                const data = await response.json();
-                console.log('Ollama Response:', data);
-                
-                // Display the response on the webpage
-                displayRecipeResponse(data.response);
-
-            } catch (error) {
-                console.error('Error generating recipes:', error);
-                recipeContent.innerHTML = '<div class="error">Sorry, there was an error generating recipes. Please try again.</div>';
-            }
-        });
-
-       
-
-        // Smooth scroll to ingredients section when clicking the button
-        document.querySelector('a[href="#ingredients"]').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('ingredients').scrollIntoView({ behavior: 'smooth' });
-        });
-    </script>
 </body>
 </html>
